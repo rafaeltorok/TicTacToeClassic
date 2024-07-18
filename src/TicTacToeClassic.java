@@ -22,7 +22,7 @@ public class TicTacToeClassic {
     // Starts the board game
     private static void playGame(Scanner scanner, Random random) {
         // Creates a new empty board
-        char[][] board = resetBoard();
+        char[][] board = newBoard();
 
         // The HashMap keeps track of the scores
         Map<String, Integer> scores = new HashMap<>();
@@ -65,7 +65,7 @@ public class TicTacToeClassic {
             System.out.print("\nPlay again? (y or n) ");
             String playAgain = scanner.nextLine().strip().toLowerCase();
             if (playAgain.equals("y") || playAgain.equals("yes")) {
-                board = resetBoard();
+                board = newBoard();
             } else {
                 break;
             }
@@ -173,7 +173,7 @@ public class TicTacToeClassic {
     }
 
     // Generates a new empty board for the "play again" option in playGame()
-    private static char[][] resetBoard() {
+    private static char[][] newBoard() {
         return new char[][]{
                 {' ', ' ', ' '},
                 {' ', ' ', ' '},
