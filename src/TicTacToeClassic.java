@@ -44,8 +44,8 @@ public class TicTacToeClassic {
             System.out.println("\n--- THE COMPUTER WON ---");
         }
         // If the board is out of spaces left, then it's a tie game
-        if (!checkSpacesLeft(board) && !checkWinner(board, 'X') ||
-                !checkSpacesLeft(board) && !checkWinner(board, 'O')) {
+        if (!checkSpacesLeft(board) && !checkWinner(board, 'X')
+                && !checkWinner(board, 'O')) {
             System.out.println("\n--- IT'S A TIE ---");
         }
         printBoard(board);
