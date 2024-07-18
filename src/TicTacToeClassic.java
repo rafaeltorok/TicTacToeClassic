@@ -1,5 +1,7 @@
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Random;
+import java.util.Map;
 
 public class TicTacToeClassic {
     public static void main(String[] args) {
@@ -9,15 +11,8 @@ public class TicTacToeClassic {
         // The random object generates the computer's move
         Random random = new Random();
 
-        // Creates a new empty board
-        char[][] board = {
-                {' ', ' ', ' '},
-                {' ', ' ', ' '},
-                {' ', ' ', ' '}
-        };
-
         // GAME BEGINS
-        playGame(board, scanner, random);
+        playGame(scanner, random);
 
         // GAME ENDS
         System.out.println("GAME OVER");
@@ -25,30 +20,56 @@ public class TicTacToeClassic {
     }
 
     // Starts the board game
-    private static void playGame(char[][] board, Scanner scanner, Random random) {
-        do {
-            if (checkSpacesLeft(board)) {
-                playerTurn(board, scanner);
-            }
-            if (checkSpacesLeft(board)) {
-                computerTurn(board, random);
-            }
-        } while (checkSpacesLeft(board) && !checkWinner(board, 'X') && !checkWinner(board, 'O'));
+    private static void playGame(Scanner scanner, Random random) {
+        // Creates a new empty board
+        char[][] board = resetBoard();
 
-        // Checks if the player won
-        if (checkWinner(board, 'X')) {
-            System.out.println("\n--- PLAYER WINS! ---");
-        }
-        // Checks if the computer won
-        if (checkWinner(board, 'O')) {
-            System.out.println("\n--- THE COMPUTER WON ---");
-        }
-        // If the board is out of spaces left, then it's a tie game
-        if (!checkSpacesLeft(board) && !checkWinner(board, 'X')
-                && !checkWinner(board, 'O')) {
-            System.out.println("\n--- IT'S A TIE ---");
-        }
-        printBoard(board);
+        // The HashMap keeps track of the scores
+        Map<String, Integer> scores = new HashMap<>();
+        scores.put("Player", 0);
+        scores.put("Computer", 0);
+
+        // Begins the game loop
+        while (true) {
+            System.out.println("----------------------");
+            do {
+                if (checkSpacesLeft(board)) {
+                    playerTurn(board, scanner);
+                }
+                if (checkSpacesLeft(board) && !checkWinner(board, 'X')) {
+                    computerTurn(board, random);
+                }
+            } while (checkSpacesLeft(board) && !checkWinner(board, 'X') && !checkWinner(board, 'O'));
+
+            // Checks if the player won
+            if (checkWinner(board, 'X')) {
+                System.out.println("\n--- PLAYER WINS! ---");
+                scores.compute("Player", (k, current) -> current == null ? 0 : current + 1);
+            }
+            // Checks if the computer won
+            if (checkWinner(board, 'O')) {
+                System.out.println("\n--- THE COMPUTER WON ---");
+                scores.compute("Computer", (k, current) -> current == null ? 0 : current + 1);
+            }
+            // If the board is out of spaces left, then it's a tie game
+            if (!checkSpacesLeft(board) && !checkWinner(board, 'X')
+                    && !checkWinner(board, 'O')) {
+                System.out.println("\n--- IT'S A TIE ---");
+            }
+            printBoard(board);
+
+            // Prints the scoreboard
+            printScores(scores);
+
+            // Gives the player the option to play a new game
+            System.out.print("\nPlay again? (y or n) ");
+            String playAgain = scanner.nextLine().strip().toLowerCase();
+            if (playAgain.equals("y") || playAgain.equals("yes")) {
+                board = resetBoard();
+            } else {
+                break;
+            }
+        } // End of the game loop
     }
 
     private static void playerTurn(char[][] board, Scanner scanner) {
@@ -141,6 +162,23 @@ public class TicTacToeClassic {
             }
         }
         return false;
+    }
+
+    // Prints the scoreboard for playGame()
+    public static void printScores(Map<String, Integer> scores) {
+        System.out.println("--- SCORES ---");
+        for (String key : scores.keySet()) {
+            System.out.printf("%-11s %-20s%n", key + ": ", scores.get(key));
+        }
+    }
+
+    // Generates a new empty board for the "play again" option in playGame()
+    private static char[][] resetBoard() {
+        return new char[][]{
+                {' ', ' ', ' '},
+                {' ', ' ', ' '},
+                {' ', ' ', ' '}
+        };
     }
 
     private static void printBoard(char[][] board) {
